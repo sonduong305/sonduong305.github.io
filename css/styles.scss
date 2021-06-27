@@ -1,8 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap");
-.loader {
-    --path: #2f3545;
-    --dot: #5628ee;
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgb(8, 0, 34);
+    background: linear-gradient(328deg, rgba(8, 0, 34, 1) 18%, rgba(28, 2, 85, 1) 65%, rgb(32, 0, 119) 100%);
+    --path: #eef2ff;
+    --dot: #4aff62;
     --duration: 3s;
+}
+.loader {
     width: 44px;
     height: 44px;
     position: relative;
@@ -144,15 +153,6 @@ html {
     }
 }
 
-body {
-    min-height: 100vh;
-    background: #dcd9e6;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .message {
     display: flex;
     flex-direction: column;
@@ -161,15 +161,21 @@ body {
     font-family: "Montserrat", sans-serif;
     font-weight: 600;
     font-size: 5vw;
-    color: #2f3545;
     text-align: center;
     margin-bottom: 0px;
+    color: #f5f2ff;
+    display: inline-block;
 }
 
 #thank {
+    font-weight: 400;
     font-size: 4vw;
+    color: #9a7dfa;
 }
-
+#dots {
+    display: inline-block;
+    color: var(--dot);
+}
 @media screen and (min-width: 600px) {
     .message {
         font-size: 40pt;

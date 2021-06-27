@@ -1,8 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap");
-.loader {
-  --path: #2f3545;
-  --dot: #5628ee;
+body {
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: #080022;
+  background: linear-gradient(328deg, #080022 18%, #1c0255 65%, #200077 100%);
+  --path: #eef2ff;
+  --dot: #4aff62;
   --duration: 3s;
+}
+
+.loader {
   width: 44px;
   height: 44px;
   position: relative;
@@ -244,24 +263,6 @@ html {
           box-sizing: border-box;
 }
 
-body {
-  min-height: 100vh;
-  background: #dcd9e6;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
 .message {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -279,13 +280,21 @@ body {
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
   font-size: 5vw;
-  color: #2f3545;
   text-align: center;
   margin-bottom: 0px;
+  color: #f5f2ff;
+  display: inline-block;
 }
 
 #thank {
+  font-weight: 400;
   font-size: 4vw;
+  color: #9a7dfa;
+}
+
+#dots {
+  display: inline-block;
+  color: var(--dot);
 }
 
 @media screen and (min-width: 600px) {
