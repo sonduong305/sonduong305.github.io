@@ -2,18 +2,45 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
+import * as TWEEN from 'tween.js';
 
 
-var model, camera, scene, renderer;
+
+var model, camera, scene, renderer, lookAt, lookAtDes, controls;
+
+lookAtDes = new THREE.Vector3(0, 0, 500);
+lookAt = new THREE.Vector3(0, 0, -20);
+
+const scrollMax = {
+    "birdView": { "min": -20, "max": 90 },
+    "exploreView": { "min": -100, "max": 50 },
+}
+const originPosition = new THREE.Vector3(0, 90, -20);
+const cameraPositionDes = new THREE.Vector3(0, 10, -70);
+
+var view = "birdView";
+var moveCamera, rotateCamera;
+var startRotation, endRotation;
 
 
-async function init() {
+function init() {
 
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 1, 3000);
-    camera.position.set(0, 90, -20)
-    camera.lookAt(0, 0, -20)
+    camera.position.copy(originPosition)
+
+    // backup original rotation
+    startRotation = new THREE.Euler().copy(camera.rotation);
+
+    // final rotation (with lookAt)
+    camera.lookAt(lookAtDes);
+    endRotation = new THREE.Euler().copy(camera.rotation);
+
+    // revert to original rotation
+    camera.rotation.copy(startRotation);
+    camera.lookAt(lookAt);
+
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -22,6 +49,10 @@ async function init() {
 
     const axesHelper = new THREE.AxesHelper(10);
     // scene.add(axesHelper);
+
+    // controls = new OrbitControls(camera, renderer.domElement);
+    // controls.target.copy(lookAt);
+    // controls.enabled = false;
 
     let hlight = new THREE.AmbientLight(0x1511f1, 3);
     scene.add(hlight);
@@ -111,7 +142,6 @@ async function init() {
     loader.load("" + new URL('/src/assets/building1/scene.glb', import.meta.url), (gltf) => {
         model = gltf.scene;
         model.scale.set(250, 250, 350);
-        // model.position.y = 1;
         model.position.x = 17;
         model.position.z = 60;
         model.rotateY(Math.PI * -0.5)
@@ -151,19 +181,78 @@ async function init() {
 
     window.addEventListener('wheel', onMouseWheel, false);
 
+    function tweenCamera(targetPosition, duration) {
+
+        var position = new THREE.Vector3().copy(camera.position);
+
+        moveCamera = new TWEEN.Tween(position)
+            .to(targetPosition, duration)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .onUpdate(() => {
+                camera.position.copy(position);
 
 
+            })
+            .onComplete(() => {
+                camera.position.copy(targetPosition);
+                console.log('completed')
+            }).start()
+
+    }
+    function tweenCameraLookAt(targetRotation, duration) {
+        const newRot = { x: targetRotation.x, y: targetRotation.y, z: targetRotation.z };
+        const oldRot = { x: camera.rotation.x, y: camera.rotation.y, z: camera.rotation.z };
+
+        rotateCamera = new TWEEN.Tween(oldRot).to(newRot, duration)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .onUpdate(() => {
+                camera.rotation.x = oldRot.x;
+                camera.rotation.y = oldRot.y;
+                camera.rotation.z = oldRot.z;
+            })
+            .onComplete(() => {
+                camera.rotation.x = newRot.x;
+                camera.rotation.y = newRot.y;
+                camera.rotation.z = newRot.z;
+
+                // Temporary set camera look at since haven't figured out how to tween the camera back
+                if (view === "birdView") {
+                    camera.lookAt(lookAt);
+                }
+            })
+            .start()
+
+
+    }
+    document.querySelector('#explore').addEventListener('click', () => {
+        console.log("explore");
+
+        var duration = 3000;
+
+
+        tweenCamera(view === "birdView" ? cameraPositionDes : originPosition, duration);
+        tweenCameraLookAt(view === "birdView" ? endRotation : startRotation, duration);
+
+
+        view = view === "birdView" ? "exploreView" : "birdView";
+        document.querySelector('#explore').setAttribute('value', view === "birdView" ? "explore" : "back to default")
+
+    });
 }
 
 function render() {
     requestAnimationFrame(render);
+    TWEEN.update();
+    // controls.update();
     renderer.render(scene, camera);
+
 }
 
 function onMouseWheel(event) {
-    camera.position.z += event.deltaY / 10;
+
+    camera.position.z += event.deltaY / 100;
     // prevent scrolling beyond a min/max value
-    camera.position.clampScalar(-20, 90);
+    camera.position.clampScalar(scrollMax[view].min, scrollMax[view].max);
 }
 
 init();

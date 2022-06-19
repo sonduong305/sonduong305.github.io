@@ -23,9 +23,11 @@
   },
   "homepage": "https://github.com/sonduong305/sonduong305.github.io#readme",
   "dependencies": {
-    "three": "^0.141.0"
+    "three": "^0.141.0",
+    "tween.js": "^16.6.0"
   },
   "devDependencies": {
+    "process": "^0.11.10",
     "shx": "^0.3.2"
   }
 }
