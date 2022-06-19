@@ -1,0 +1,15 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(328deg, #020136 0%, #1511f1 100%);
+  margin: 0;
+  overflow: hidden;
+}
+
+#explore {
+  position: absolute;
+  top: 30vh;
+  left: 49.8vw;
+}
+
+/*# sourceMappingURL=index.77a9bc14.css.map */
